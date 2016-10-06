@@ -136,7 +136,7 @@ void huffRecursivo(float array[],struct node *leaf){
         Parente->left = filho1;    
         Parente->right = filho2;
         leaf = Parente;
-        
+        ////comentarios 3 2 1
         huffRecursivo(array,leaf);
         
     }else{
