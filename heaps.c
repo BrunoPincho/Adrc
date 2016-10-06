@@ -7,6 +7,7 @@
 void heapsort(float array[], int n);
 void heapify(float array[], int n);
 void adjust(float array[], int n);
+int arraysize;
 
 struct node{
   float key_value;
@@ -186,29 +187,39 @@ void huffRecursivo(float array[],struct node *leaf){
           } 
           
           if(array[i]<((leaf)->key_value) && array[i+1]<((leaf)->key_value) && array[i]>0){
+              
               ancestral = array[i] + array[i+1];
               minpar1 = array[i];
               minpar2 = array[i+1];
               removeNodeHeap(array,array[i],6);
-              removeNodeHeap(array,array[i+1],6);
+              
               Parente = (struct node*) malloc( sizeof( struct node ) );
               Parente->key_value = ancestral;  
               printf("%f\n",Parente->key_value );
 
+              if((i+1)<=arraysize){
+
+              removeNodeHeap(array,array[i+1],6);
               filho1 = (struct node*) malloc( sizeof( struct node ) );
               filho1->left = 0;  
               filho1->right = 0;
               filho1->up = Parente;
               filho1->key_value = minpar1;
 
-              filho2 = (struct node*) malloc( sizeof( struct node ) );
-              filho2->left = 0;  
-              filho2->right = 0;
-              filho2->up = Parente;
-              filho2->key_value = minpar2;
+                  
+                filho2 = (struct node*) malloc( sizeof( struct node ) );
+                filho2->left = 0;  
+                filho2->right = 0;
+                filho2->up = Parente;
+                filho2->key_value = minpar2;
 
-              Parente->right = filho2;    
-              Parente->left = filho1;
+                Parente->right = filho2;
+                Parente->left = filho1;
+              }else{
+                  Parente->right = 0;
+                  Parente->left = 0;
+                }    
+              
 
               ancestral = (leaf->key_value) + (Parente->key_value);
 
@@ -222,16 +233,11 @@ void huffRecursivo(float array[],struct node *leaf){
                     aux->right=leaf;
                 }else{
                     aux->left=leaf;
-                    aux->right=Parente;
+                    aux->right=Parente;  
                 }
-
-            }
-
-        
-
-
+                leaf = aux;
+            }        
         }
-
     }
 }
 
@@ -276,6 +282,7 @@ int main()
  int n,i;
  char  symbols[6]={'a','b','c','d','e','f'};
  float freq[6] = {0.22,0.03,0.14,0.14,0.41,0.06};
+ arraysize = 6;
 int * Code;
 int tamanh = sizeof(freq)/sizeof(float);
 Code = (int*)malloc(tamanh*sizeof(int));
