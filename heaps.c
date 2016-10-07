@@ -117,7 +117,7 @@ void huffRecursivo(float array[],struct node *leaf){
       Parente->key_value=ancestral;  
       printf("%f\n",Parente->key_value );
 
-      Parente->left = 0;    
+        Parente->left = 0;    
         Parente->right = 0;
         Parente->up = 0;
         
@@ -196,7 +196,7 @@ void huffRecursivo(float array[],struct node *leaf){
               Parente->key_value = ancestral;  
               printf("%f\n",Parente->key_value );
 
-              if((i+1)<=arraysize){
+              if((i+1)<arraysize){
 
               removeNodeHeap(array,array[i+1],6);
               filho1 = (struct node*) malloc( sizeof( struct node ) );
@@ -267,8 +267,6 @@ void huffmanCode(char* symbols,float* freq,int** Code){
      {
       printf("\n %4f", arrayAux[i]);
      }
-
-
      huffRecursivo(arrayAux,doot);
 }
 
