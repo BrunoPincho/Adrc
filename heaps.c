@@ -86,6 +86,29 @@ void adjust(float array[], int n)
 }
 
 void removeNodeHeap(float array[],float Toremove,int length){
+  int i,y;
+  
+
+  for(i=0;i<length;i++){
+    if(array[i]==Toremove){
+      array[i] = 1;
+      
+      heapsort(array,length);
+      /*for(y=0;y<length;y++){
+        if(y+1<=length)
+          array[y]= array[y+1];
+      }*/
+
+      break;
+    }
+
+  }
+
+}
+
+
+
+void removeNodeHeap2(float array[],float Toremove,int length){
   int i;
   
 
@@ -93,6 +116,8 @@ void removeNodeHeap(float array[],float Toremove,int length){
     if(array[i]==Toremove){
       array[i] = -1;
       heapsort(array,length);
+      
+      
       break;
     }
 
@@ -101,16 +126,16 @@ void removeNodeHeap(float array[],float Toremove,int length){
 }
 
 void huffRecursivo(float array[],struct node *leaf){
-  int i,j,k;
+  int i,j,k,caso;
   struct node* nodoactual=0;
   struct node* aux=0;
-  float minpar1,minpar2,ancestral;
+  float minpar1,minpar2,ancestral,tempcomp;
 
     if( leaf == 0 ){
       minpar1 = array[0];
       minpar2 = array[1];
-      removeNodeHeap(array,array[0],6);
-      removeNodeHeap(array,array[1],6);
+      removeNodeHeap(array,minpar1,6);
+      removeNodeHeap(array,minpar2,6);
       ancestral = minpar1 + minpar2;
       
       Parente = (struct node*) malloc( sizeof( struct node ) );
@@ -141,7 +166,22 @@ void huffRecursivo(float array[],struct node *leaf){
         
     }else{
         for(i=0;i<6;i++){
-          if(array[i]<((leaf)->key_value) && array[i+1]>((leaf)->key_value) && array[i]>0){
+
+          ////triplets case
+          tempcomp=array[i]+array[i+1]
+          if(((tempcomp - leaf->key_value) > (1.5 * leaf->key_value)) && i+1<6){
+              if()
+
+         }else{
+              caso = 2;
+         }
+
+
+
+          //////
+
+
+          if(array[i]<=((leaf)->key_value) && array[i+1]>=((leaf)->key_value) && array[i]>0){
               ancestral = array[i] + ((leaf)->key_value);
               minpar1 = array[i];
               removeNodeHeap(array,array[i],6);
@@ -163,7 +203,7 @@ void huffRecursivo(float array[],struct node *leaf){
               huffRecursivo(array,leaf);
           }
           
-          if(array[i] > ((leaf)->key_value) && (array[i]-((leaf)->key_value))<5) {
+          if((array[i] > ((leaf)->key_value) && (array[i]-((leaf)->key_value))<5)) {
               ancestral = array[i] + ((leaf)->key_value);
               minpar2 = array[i];
               removeNodeHeap(array,array[i],6);
@@ -184,8 +224,9 @@ void huffRecursivo(float array[],struct node *leaf){
 
               huffRecursivo(array,leaf);
           } 
+
           
-          if(array[i]<((leaf)->key_value) && array[i+1]<((leaf)->key_value) && array[i]>0){
+          if(array[i]<((leaf)->key_value) && array[i+1]<((leaf)->key_value) && array[i]<1 && (array[i]+array[i+1])<array[i+2]){
               
               ancestral = array[i] + array[i+1];
               minpar1 = array[i];
@@ -275,32 +316,32 @@ void huffmanCode(char* symbols,float* freq,int** Code){
 
 int main()
 {
- int *array;
+ float *array;
  int n,i;
  char  symbols[6]={'a','b','c','d','e','f'};
- float freq[6] = {0.22,0.03,0.14,0.14,0.41,0.06};
+ float freq[6] = {0.25,0.05,0.1,0.15,0.2,0.25};
  arraysize = 6;
 int * Code;
 int tamanh = sizeof(freq)/sizeof(float);
 Code = (int*)malloc(tamanh*sizeof(int));
 
-printf("tamanho do code %d",tamanh);
+//printf("tamanho do code %d",tamanh);
 
 huffmanCode(symbols,freq,&Code);
 /*
- array = (int*)malloc(200*sizeof(int)); 
+ array = (float*)malloc(200*sizeof(float)); 
  
  printf("Enter the no. of elements to be sorted: ");
  scanf("%d",&n);
  
  printf("\nEnter the elements: \n");
  for(i=0 ; i<n ; i++)
- scanf("%d",&array[i]);
+ scanf("%f",&array[i]);
  
  printf("\nBefore Heapsort:");  //Array Before Mergesort
  for(i = 0; i < n; i++)
  {
-  printf("%4d", array[i]);
+  printf("%4f\n", array[i]);
  }
  printf("\n");
  
@@ -309,11 +350,17 @@ huffmanCode(symbols,freq,&Code);
  printf("\nAfter Heapsort:");  //Array After Mergesort
  for(i = 0; i < n; i++)
  {
-  printf("%4d", array[i]);
+  printf("%4f \n", array[i]);
  }
+ removeNodeHeap(array,array[0],n);
  printf("\n");
+ printf("\n depois da remoçao:");  //Array After Mergesort
+ for(i = 0; i < n; i++)
+ {
+  printf("%4f \n", array[i]);
+ }
  printf("size of array %lu",sizeof(array));
- free(array);*/
- 
+ free(array);
+ */
  return 0;
 }
