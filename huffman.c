@@ -162,7 +162,7 @@ void Creategraph(float* array,int size){
 
 	    	} 
 
-	    	if((2*i+2)<=size && (actual->left == 0 || actual->right == 0)){
+	    	if((2*i+2)<size && (actual->left == 0 || actual->right == 0)){
 
 	        	filho2 = (struct node*) malloc( sizeof( struct node ) );
 				filho2->key_value = array[2*i+2];
@@ -179,7 +179,7 @@ void Creategraph(float* array,int size){
 	    				actual->left = filho1;
 	    		}
 	        }
-	        nodeid ++ ;
+	        nodeid ++;
 
      	 }
 
