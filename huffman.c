@@ -195,7 +195,7 @@ void Creategraph(float* array,int size){
 
 void encontraMinimo(struct node *node){
 	
-	if ((node->key_value <= minimo) && (node->used ==0) )
+	if ((node->key_value < minimo) && (node->used ==0) )
 	{
 		lowest = node;
 		minimo = (lowest)->key_value;
@@ -237,7 +237,12 @@ minimo = root->key_value;
 		aux2 = filho1->up;
 		Parente = (struct node*) malloc( sizeof( struct node ));
 		Parente->key_value = filho1->key_value + filho2->key_value;
-		Parente->up = aux;
+
+		if(aux != filho1){
+			Parente->up = aux;
+		}else{
+			Parente->up = aux2;
+		}
 		Parente->left = filho1;
 		Parente->right = filho2;
 		filho1->up=Parente;
@@ -245,29 +250,37 @@ minimo = root->key_value;
 
 		if(filho2->rootVal==1 || filho1->rootVal==1){
 			Parente->rootVal=1;
+			root = Parente;
+			Parente->up = 0;
+			
 		}
 
 		if(aux != 0 && aux->left == filho2){
-			if(Parente->rootVal ==1 && filho2->rootVal==1){
-				aux->left = 0;
-			}else{
-				aux->left = Parente;
-			}
+				if(Parente->key_value!=1 && aux->up != Parente){
+					aux->left = Parente;
+				}else{
+					aux->left = 0;
+				}
+			
 			
 			if(aux->right == filho1){
 				aux->right = 0;
 			}
-		}else{
+		}else if(aux!=0){
 			aux->right = Parente;
 		}
 
 		if(aux2 != 0 && aux2->left == filho1){
-			aux2->left = 0;
+			if(Parente->up != aux2){
+				aux2->left = 0;
+			}else if(Parente->key_value!=1 && aux2->up != Parente){
+				aux2->left=Parente;
+			}
 			if(aux2->right > 0){
 				aux2->left = aux2->right;
 				aux2->right = 0;
 			}
-		}else if(aux2!=0){
+		}else if(aux2!=0 && aux2->right == filho1){
 			aux2->right = 0;
 		}
 
@@ -289,8 +302,8 @@ int main()
 
  int n,i;
  char  symbols[6]={'a','b','c','d','e','f'};
- //float freq[6] = {0.25,0.05,0.1,0.15,0.2,0.25};
- float freq[6] = {0.22,0.03,0.14,0.14,0.41,0.06};
+ float freq[6] = {0.25,0.05,0.1,0.15,0.2,0.25};
+ //float freq[6] = {0.22,0.03,0.14,0.14,0.41,0.06};
  arraysize = 6;
 int * Code;
 int tamanh = sizeof(freq)/sizeof(float);
