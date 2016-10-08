@@ -6,11 +6,13 @@ void heapsort(float array[], int n);
 void heapify(float array[], int n);
 void adjust(float array[], int n);
 int arraysize;
-
+float minimo;
 struct node{
   float key_value;
   int level;
   int id;
+  int used;
+  int rootVal;
   struct node*left;
   struct node*right;
   struct node*up;
@@ -21,6 +23,7 @@ struct node{
   struct node *leaf;
   struct node *root;
   struct node *actual;
+  struct node *lowest;
 ///maxheap
 
   void heapsort(float array[], int n)
@@ -184,6 +187,95 @@ void Creategraph(float* array,int size){
      	 }
 
 	}
+	root->rootVal=1;
+
+
+
+}
+
+void encontraMinimo(struct node *node){
+	
+	if ((node->key_value <= minimo) && (node->used ==0) )
+	{
+		lowest = node;
+		minimo = (lowest)->key_value;
+	}
+	if(node->left != 0){
+	    encontraMinimo(node->left);
+	}
+	if(node->right != 0){
+		encontraMinimo(node->right);
+	}
+
+
+}
+
+void BuildHuffman(){
+/* neste contexto as variaveis globais filho1 = nodo mais pequena, filho2 = segundo nodo mais pequena */
+struct node* aux=0;
+struct node* aux2=0;
+actual = 0;
+int i;
+minimo = root->key_value;
+	while(root->key_value != 1){
+
+		//encontra os minimos
+		for(i=0;i<2;i++){
+			encontraMinimo(root);
+			if(i==0){
+				filho1 = lowest;
+				filho1->used = 1;
+			}else{
+				filho2 = lowest;
+				filho2->used = 1;	
+			}
+			minimo = 1;
+		}
+				
+		//soma ou faz subgrafo
+		aux = filho2->up;
+		aux2 = filho1->up;
+		Parente = (struct node*) malloc( sizeof( struct node ));
+		Parente->key_value = filho1->key_value + filho2->key_value;
+		Parente->up = aux;
+		Parente->left = filho1;
+		Parente->right = filho2;
+		filho1->up=Parente;
+		filho2->up=Parente;
+
+		if(filho2->rootVal==1 || filho1->rootVal==1){
+			Parente->rootVal=1;
+		}
+
+		if(aux != 0 && aux->left == filho2){
+			if(Parente->rootVal ==1 && filho2->rootVal==1){
+				aux->left = 0;
+			}else{
+				aux->left = Parente;
+			}
+			
+			if(aux->right == filho1){
+				aux->right = 0;
+			}
+		}else{
+			aux->right = Parente;
+		}
+
+		if(aux2 != 0 && aux2->left == filho1){
+			aux2->left = 0;
+			if(aux2->right > 0){
+				aux2->left = aux2->right;
+				aux2->right = 0;
+			}
+		}else if(aux2!=0){
+			aux2->right = 0;
+		}
+
+		
+		//update no actual
+
+
+	}
 
 
 
@@ -192,13 +284,13 @@ void Creategraph(float* array,int size){
 
 
 
-
 int main()
 {
 
  int n,i;
  char  symbols[6]={'a','b','c','d','e','f'};
- float freq[6] = {0.25,0.05,0.1,0.15,0.2,0.25};
+ //float freq[6] = {0.25,0.05,0.1,0.15,0.2,0.25};
+ float freq[6] = {0.22,0.03,0.14,0.14,0.41,0.06};
  arraysize = 6;
 int * Code;
 int tamanh = sizeof(freq)/sizeof(float);
@@ -212,7 +304,7 @@ printf("\n antes ");  //Array After Mergesort
  
  heapsort(freq,6);
  Creategraph(freq,6);
- 
+ BuildHuffman();
 
  printf("\n");
  printf("\n depois da remoçao:");  //Array After Mergesort
