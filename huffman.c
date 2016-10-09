@@ -142,7 +142,7 @@ void Creategraph(float* array,int size){
 	        ultimoId = filho2->id;
 	        root = Parente;
 
-     	 } else if((2*i+1)<=size && i!=0){
+     	 } else if((2*i+1)<size && i!=0){
      	 	encontraActual(root,nodeid);
 		 	filho1 = (struct node*) malloc( sizeof( struct node ) );
 
@@ -302,8 +302,9 @@ int main()
 
  int n,i;
  char  symbols[6]={'a','b','c','d','e','f'};
- float freq[6] = {0.25,0.05,0.1,0.15,0.2,0.25};
+ //float freq[6] = {0.25,0.05,0.1,0.15,0.2,0.25};
  //float freq[6] = {0.22,0.03,0.14,0.14,0.41,0.06};
+ float freq[7] = {0.25,0.05,0.05,0.15,0.1,0.3,0.1};
  arraysize = 6;
 int * Code;
 int tamanh = sizeof(freq)/sizeof(float);
@@ -315,8 +316,13 @@ printf("\n antes ");  //Array After Mergesort
   printf("%f \n", freq[i]);
  }
  
- heapsort(freq,6);
- Creategraph(freq,6);
+ heapsort(freq,7);
+ Creategraph(freq,7);
+for(i = 0; i < 7; i++)
+ {
+  printf("\n%f \n", freq[i]);
+ }
+
  BuildHuffman();
 
  printf("\n");
