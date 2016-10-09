@@ -195,7 +195,7 @@ void Creategraph(float* array,int size){
 
 void encontraMinimo(struct node *node){
 	
-	if ((node->key_value < minimo) && (node->used ==0) )
+	if ((node->key_value <= minimo) && (node->used ==0) )
 	{
 		lowest = node;
 		minimo = (lowest)->key_value;
@@ -245,6 +245,7 @@ minimo = root->key_value;
 		}
 		Parente->left = filho1;
 		Parente->right = filho2;
+		Parente->level=1;
 		filho1->up=Parente;
 		filho2->up=Parente;
 
