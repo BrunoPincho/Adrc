@@ -257,17 +257,18 @@ char *code;
 code = (char*)malloc(256*sizeof(char));
 
 
-char matrixaux[strlen(symbols)][2];
+float matrixaux[strlen(symbols)][2];
 float arrayAux[strlen(symbols)];
 
 for(i=0;i<strlen(symbols);i++){
           matrixaux[i][0] = symbols[i];
-          arrayAux[i]=freq[i];
+          matrixaux[i][1] = freq[i];
+          
       }
 
 
- heapsort(freq,7);
- Creategraph(freq,7);
+ heapsort(freq,10);
+ Creategraph(freq,10);
 minimo = root->key_value;
 	while(root->key_value != 1){
 
@@ -367,7 +368,8 @@ int main()
  char  symbols[7]={'a','b','c','d','e','f','g'};
  //float freq[6] = {0.25,0.05,0.1,0.15,0.2,0.25};
  //float freq[6] = {0.22,0.03,0.14,0.14,0.41,0.06};
- float freq[7] = {0.25,0.05,0.05,0.15,0.1,0.3,0.1};
+ //float freq[7] = {0.25,0.05,0.05,0.15,0.1,0.3,0.1};
+ float freq[10] = {0.01,0.02,0.04,0.04,0.09,0.1,0.1,0.11,0.11,0.38};
  arraysize = 6;
 
 int tamanh = sizeof(freq)/sizeof(float);
@@ -375,7 +377,7 @@ int tamanh = sizeof(freq)/sizeof(float);
 
 printf("\n antes ");  //Array After Mergesort
   
-for(i = 0; i < 7; i++)
+for(i = 0; i < 10; i++)
  {
   printf("\n%f \n", freq[i]);
  }
@@ -384,7 +386,7 @@ for(i = 0; i < 7; i++)
 
  printf("\n");
 //Array After Mergesort
- for(i = 0; i < 6; i++)
+ for(i = 0; i < 10; i++)
  {
   printf("%f \n", freq[i]);
  }
