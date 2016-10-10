@@ -13,6 +13,7 @@ struct node{
   int id;
   int used;
   int rootVal;
+  int seen;
   struct node*left;
   struct node*right;
   struct node*up;
@@ -107,6 +108,8 @@ void encontraActual(struct node *node,int nodeid){
 
 
 }
+
+
 
 void Creategraph(float* array,int size){
 	int i;
@@ -209,13 +212,62 @@ void encontraMinimo(struct node *node){
 
 
 }
+int indexo;
+int found=0;
+void codify(struct node *node,char **code,float freq,int* codeaux){
+	//passar isto para fora da função
+	//char *code;
+	//code = (char*)malloc(256*sizeof(char));
+	int i;
 
-void BuildHuffman(){
+	
+	if (node->left==0 && node->right==0 && node->seen==0)
+	{
+		
+		
+			node->seen=1;
+			indexo--;					
+		return;
+	}
+
+	if(node->left != 0){
+		codeaux[indexo]=0;
+		indexo++;
+	    codify(node->left,code,freq,codeaux);
+	}
+
+	
+
+	if(node->right != 0){
+		codeaux[indexo]=1;
+		indexo++;
+		codify(node->right,code,freq,codeaux);
+	}
+	indexo--;
+
+}
+
+void BuildHuffman(char* symbols,float* freq){
 /* neste contexto as variaveis globais filho1 = nodo mais pequena, filho2 = segundo nodo mais pequena */
 struct node* aux=0;
 struct node* aux2=0;
 actual = 0;
 int i;
+char *code;
+code = (char*)malloc(256*sizeof(char));
+
+
+char matrixaux[strlen(symbols)][2];
+float arrayAux[strlen(symbols)];
+
+for(i=0;i<strlen(symbols);i++){
+          matrixaux[i][0] = symbols[i];
+          arrayAux[i]=freq[i];
+      }
+
+
+ heapsort(freq,7);
+ Creategraph(freq,7);
 minimo = root->key_value;
 	while(root->key_value != 1){
 
@@ -291,8 +343,17 @@ minimo = root->key_value;
 
 	}
 
+	//fazer o codigo em si
+	int codigo[256];
+	
+	for(i=6;i>=0;i--){
+		codify(root,&code,freq[i],codigo);
+		indexo=0;
+		found=0;
+	}
 
 
+	//
 
 }
 
@@ -302,32 +363,27 @@ int main()
 {
 
  int n,i;
- char  symbols[6]={'a','b','c','d','e','f'};
+ char *Code;
+ char  symbols[7]={'a','b','c','d','e','f','g'};
  //float freq[6] = {0.25,0.05,0.1,0.15,0.2,0.25};
  //float freq[6] = {0.22,0.03,0.14,0.14,0.41,0.06};
  float freq[7] = {0.25,0.05,0.05,0.15,0.1,0.3,0.1};
  arraysize = 6;
-int * Code;
+
 int tamanh = sizeof(freq)/sizeof(float);
-Code = (int*)malloc(tamanh*sizeof(int));
+//Code = (int*)malloc(tamanh*sizeof(int));
 
 printf("\n antes ");  //Array After Mergesort
- for(i = 0; i < 6; i++)
- {
-  printf("%f \n", freq[i]);
- }
- 
- heapsort(freq,7);
- Creategraph(freq,7);
+  
 for(i = 0; i < 7; i++)
  {
   printf("\n%f \n", freq[i]);
  }
 
- BuildHuffman();
+ BuildHuffman(symbols,freq);
 
  printf("\n");
- printf("\n depois da remoçao:");  //Array After Mergesort
+//Array After Mergesort
  for(i = 0; i < 6; i++)
  {
   printf("%f \n", freq[i]);
