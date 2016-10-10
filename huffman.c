@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
  
-void heapsort(float array[], int n);
-void heapify(float array[], int n);
-void adjust(float array[], int n);
+void heapsort(float array[][2], int n);
+void heapify(float array[][2], int n);
+void adjust(float array[][2], int n);
 int arraysize;
 float minimo;
 struct node{
@@ -27,68 +27,83 @@ struct node{
   struct node *lowest;
 ///maxheap
 
-  void heapsort(float array[], int n)
+  void heapsort(float array[][2], int n)
 {
  int i;
  float t;
+ float simbol;
  
  heapify(array,n);
  
  for(i=n-1 ; i>0 ; i--)
  {
-  t = array[0];
-  array[0] = array[i];
-  array[i] = t;
+
+  simbol = array[0][0];
+  array[0][0] = array[i][0];
+  array[i][0] = simbol;
+  	
+  t = array[0][1];
+  array[0][1] = array[i][1];
+  array[i][1] = t;
+  
   adjust(array,i);
  }
 }
  
  
-void heapify(float array[], int n)
+void heapify(float array[][2], int n)
 {
  float item;
+ float simbol;
  int i,j,k;
  
      for(k=1 ; k<n ; k++)
      {
-      item = array[k];
+      item = array[k][1];
+      simbol = array[k][0];
       i = k;
       j = (i-1)/2;
      
-      while( (i>0) && (item<array[j]) )
+      while( (i>0) && (item<array[j][1]) )
       {
-       array[i] = array[j];
+       array[i][1] = array[j][1];
+       array[i][0] = array[j][0];
        i = j;
        j = (i-1)/2;
       }
-      array[i] = item;
+      array[i][1] = item;
+      array[i][0] = simbol;
      }
 }
  
-void adjust(float array[], int n)
+void adjust(float array[][2], int n)
 {
        float item;
+       float simbol;
        int i,j;
        
        j = 0;
-       item = array[j];
+       item = array[j][1];
+       simbol = array[j][0];
        i = 2*j+1;
        
             while(i<=n-1)
            {
             if(i+1 <= n-1)
-             if(array[i] > array[i+1])
+             if(array[i][1] > array[i+1][1])
               i++;
-            if(item > array[i])
+            if(item > array[i][1])
             {
-             array[j] = array[i];
+             array[j][1] = array[i][1];
+             array[j][0] = array[i][0];
              j = i;
              i = 2*j+1;
             }
             else
              break;
            }
-       array[j] = item;
+       array[j][1] = item;
+       array[j][0] = simbol;
 }
 
 
@@ -267,7 +282,7 @@ for(i=0;i<strlen(symbols);i++){
       }
 
 
- heapsort(freq,10);
+ heapsort(matrixaux,10);
  Creategraph(freq,10);
 minimo = root->key_value;
 	while(root->key_value != 1){
@@ -365,7 +380,7 @@ int main()
 
  int n,i;
  char *Code;
- char  symbols[7]={'a','b','c','d','e','f','g'};
+ char  symbols[10]={'a','b','c','d','e','f','g','h','i','j'};
  //float freq[6] = {0.25,0.05,0.1,0.15,0.2,0.25};
  //float freq[6] = {0.22,0.03,0.14,0.14,0.41,0.06};
  //float freq[7] = {0.25,0.05,0.05,0.15,0.1,0.3,0.1};
