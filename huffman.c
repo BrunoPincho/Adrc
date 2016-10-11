@@ -9,6 +9,7 @@ int arraysize;
 float minimo;
 struct node{
   float key_value;
+  char symbol;
   int level;
   int id;
   int used;
@@ -26,6 +27,16 @@ struct node{
   struct node *actual;
   struct node *lowest;
 ///maxheap
+
+  //lista fifo 
+  struct stack{
+  	char simbolo;
+  	int *codificacao;
+  	float frequencia;
+  	struct stack* next;
+  };struct stack* stack;
+
+
 
   void heapsort(float array[][2], int n)
 {
@@ -126,7 +137,7 @@ void encontraActual(struct node *node,int nodeid){
 
 
 
-void Creategraph(float* array,int size){
+void Creategraph(float array[][2],int size){
 	int i;
 	int nodeid=0,ultimoId=0;
 	struct node *aux;
@@ -134,11 +145,17 @@ void Creategraph(float* array,int size){
 	for(i=0;i<size;i++){
 		if(i==0 && (2*i+1)<size){ 
 		 Parente = (struct node*) malloc( sizeof( struct node ));
-		 filho1 = (struct node*) malloc( sizeof( struct node ) );  
-     	 filho2 = (struct node*) malloc( sizeof( struct node ) );
-     	 Parente->key_value = array[i];  
-      	 filho1->key_value = array[2*i+1];
-      	 filho2->key_value = array[2*i+2];
+		 filho1 = (struct node*) malloc( sizeof( struct node ));  
+     	 filho2 = (struct node*) malloc( sizeof( struct node ));
+     	 Parente->key_value = array[i][1];  
+      	 filho1->key_value = array[2*i+1][1];
+      	 filho2->key_value = array[2*i+2][1];
+
+      	 //simbolos
+      	 Parente->symbol = array[i][0];  
+      	 filho1->symbol = array[2*i+1][0];
+      	 filho2->symbol = array[2*i+2][0];
+      	 //
 
 	        Parente->left = filho1;    
 	        Parente->right = filho2;
@@ -164,7 +181,8 @@ void Creategraph(float* array,int size){
      	 	encontraActual(root,nodeid);
 		 	filho1 = (struct node*) malloc( sizeof( struct node ) );
 
-		 	filho1->key_value = array[2*i+1];
+		 	filho1->key_value = array[2*i+1][1];
+		 	filho1->symbol = array[2*i+1][0];
 		 	filho1->left = 0; 
 	        filho1->right = 0;
 	        filho1->id = ultimoId + 1;
@@ -186,7 +204,8 @@ void Creategraph(float* array,int size){
 	    	if((2*i+2)<size && (actual->left == 0 || actual->right == 0)){
 
 	        	filho2 = (struct node*) malloc( sizeof( struct node ) );
-				filho2->key_value = array[2*i+2];
+				filho2->key_value = array[2*i+2][1];
+				filho2->symbol = array[2*i+2][0];
 		 		filho2->left = 0; 
 	        	filho2->right = 0;
 	        	filho2->id = ultimoId + 1;
@@ -206,9 +225,6 @@ void Creategraph(float* array,int size){
 
 	}
 	root->rootVal=1;
-
-
-
 }
 
 void encontraMinimo(struct node *node){
@@ -229,17 +245,34 @@ void encontraMinimo(struct node *node){
 }
 int indexo;
 int found=0;
-void codify(struct node *node,char **code,float freq,int* codeaux){
+void codify(struct node *node,int* codeaux){
 	//passar isto para fora da função
 	//char *code;
 	//code = (char*)malloc(256*sizeof(char));
-	int i;
-
+	int i,k;
+	struct stack* temp;
 	
 	if (node->left==0 && node->right==0 && node->seen==0)
 	{
 		
-		
+			temp = (struct stack*)malloc(sizeof(struct stack));
+			temp->codificacao = (int*)malloc(indexo*sizeof(int));
+				//enche o array do codigo
+				for(k=0;k<indexo;k++){
+					temp->codificacao[k]=codeaux[k];
+				}
+				temp->codificacao[indexo]=-1;
+				//
+			temp->simbolo = node->symbol;
+			temp->frequencia = node->key_value;
+			if(stack!=0){
+				temp->next = stack;
+				stack = temp;
+			}else{
+				temp->next = NULL;
+				stack = temp;
+			}
+
 			node->seen=1;
 			indexo--;					
 		return;
@@ -248,7 +281,7 @@ void codify(struct node *node,char **code,float freq,int* codeaux){
 	if(node->left != 0){
 		codeaux[indexo]=0;
 		indexo++;
-	    codify(node->left,code,freq,codeaux);
+	    codify(node->left,codeaux);
 	}
 
 	
@@ -256,7 +289,7 @@ void codify(struct node *node,char **code,float freq,int* codeaux){
 	if(node->right != 0){
 		codeaux[indexo]=1;
 		indexo++;
-		codify(node->right,code,freq,codeaux);
+		codify(node->right,codeaux);
 	}
 	indexo--;
 
@@ -283,7 +316,7 @@ for(i=0;i<strlen(symbols);i++){
 
 
  heapsort(matrixaux,10);
- Creategraph(freq,10);
+ Creategraph(matrixaux,10);
 minimo = root->key_value;
 	while(root->key_value != 1){
 
@@ -361,12 +394,14 @@ minimo = root->key_value;
 
 	//fazer o codigo em si
 	int codigo[256];
+
 	
-	for(i=6;i>=0;i--){
-		codify(root,&code,freq[i],codigo);
-		indexo=0;
-		found=0;
-	}
+	
+	
+		codify(root,codigo);
+		
+		
+	
 
 
 	//
