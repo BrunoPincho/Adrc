@@ -302,8 +302,8 @@ void codify(struct node *node,int* codeaux){
 
 void BuildHuffman(char* symbols,float* freq,struct stack** output){
 /* neste contexto as variaveis globais filho1 = nodo mais pequena, filho2 = segundo nodo mais pequena */
-struct node* aux=0;
-struct node* aux2=0;
+struct node* Pai_smallest=0;
+struct node* Pai_2nd=0;
 actual = 0;
 int i,length;
 char *code;
@@ -323,6 +323,7 @@ for(i=0;i<length;i++){
  heapsort(matrixaux,length);
  Creategraph(matrixaux,length);
 minimo = root->key_value;
+int lado;//0 para o pai do mais pequeno, 1 para o pai do segundo mais pequeno
 	while(root->key_value != 1){
 
 		//encontra os minimos
@@ -339,16 +340,41 @@ minimo = root->key_value;
 		}
 				
 		//soma ou faz subgrafo
-		aux = filho2->up;
-		aux2 = filho1->up;
+		Pai_smallest = filho1->up;
+		Pai_2nd = filho2->up;
+		
 		Parente = (struct node*) malloc( sizeof( struct node ));
 		Parente->key_value = filho1->key_value + filho2->key_value;
 
-		if(aux != filho1){
-			Parente->up = aux;
-		}else{
-			Parente->up = aux2;
+		if(Pai_smallest==0){
+			Parente->up = Pai_2nd;
+		 	lado=1;
 		}
+		if(Pai_2nd == 0){
+			Parente->up = Pai_smallest;
+		 	lado=0;
+		}
+		if(Pai_smallest ==0 || Pai_2nd ==0){
+
+		}else{
+			 if(Pai_smallest->key_value < Pai_2nd->key_value){
+			 	
+			 	Parente->up = Pai_2nd;
+			 	lado=1;
+			 }
+			 if(Pai_smallest->key_value > Pai_2nd->key_value){
+			 	Parente->up = Pai_smallest;
+			 	lado=0;
+			 }
+
+			 if(Pai_smallest->key_value == Pai_2nd->key_value){
+		 		Parente->up = Pai_smallest;
+		 		lado=0;
+		 	}
+		}
+
+
+
 		Parente->left = filho1;
 		Parente->right = filho2;
 		Parente->level=1;
@@ -359,42 +385,60 @@ minimo = root->key_value;
 			Parente->rootVal=1;
 			root = Parente;
 			Parente->up = 0;
-			
 		}
 
-		if(aux != 0 && aux->left == filho2){
-				if(Parente->key_value!=1 && aux->up != Parente){
-					aux->left = Parente;
+		if(root!=Parente){
+			if(lado ==1){
+				if(Pai_2nd->left == filho2){
+					Pai_2nd->left = Parente;
 				}else{
-					aux->left = 0;
+					Pai_2nd->right = Parente;
 				}
-			
-			
-			if(aux->right == filho1){
-				aux->right = 0;
+
+				if(Pai_smallest !=0 && Pai_smallest->left == filho1){
+					Pai_smallest->left = 0;
+				}else if(Pai_smallest !=0){
+					Pai_smallest->right = 0;
+				}
+				
+			}else {
+				if(Pai_smallest->left == filho1){
+					Pai_smallest->left = Parente;
+
+				}else{
+					Pai_smallest->right = Parente;
+				}
+
+				if(Pai_2nd!=0 && Pai_2nd->left == filho2){
+					Pai_2nd->left = 0;
+
+				}else if(Pai_2nd!=0){
+					Pai_2nd->right = 0;
+				}
+
 			}
-		}else if(aux!=0){
-			aux->right = Parente;
+		}else{
+			if(Pai_smallest !=0){
+				if(Pai_smallest->left == filho1){
+					Pai_smallest->left = 0;
+
+				}else{
+					Pai_smallest->right = 0;
+				}
+
+			}
+
+
+			if(Pai_2nd!=0){
+				if(Pai_2nd->left == filho2){
+					Pai_2nd->left = 0;
+				}else{
+					Pai_2nd->right = 0;
+				}
+			}
+
+
 		}
-
-		if(aux2 != 0 && aux2->left == filho1){
-			if(Parente->up != aux2){
-				aux2->left = 0;
-			}else if(Parente->key_value!=1 && aux2->up != Parente){
-				aux2->left=Parente;
-			}
-			if(aux2->right > 0){
-				aux2->left = aux2->right;
-				aux2->right = 0;
-			}
-		}else if(aux2!=0 && aux2->right == filho1){
-			aux2->right = 0;
-		}
-
-		
-		//update no actual
-
-
 	}
 
 	//fazer o codigo em si
