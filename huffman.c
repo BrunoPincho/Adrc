@@ -32,6 +32,7 @@ struct node{
   struct stack{
   	char simbolo;
   	int *codificacao;
+  	int codesize;
   	float frequencia;
   	struct stack* next;
   };struct stack* stack;
@@ -261,7 +262,11 @@ void codify(struct node *node,int* codeaux){
 				for(k=0;k<indexo;k++){
 					temp->codificacao[k]=codeaux[k];
 				}
+				if(node->symbol == 'a')
+					puts("aqui");
+
 				temp->codificacao[indexo]=-1;
+				temp->codesize = indexo;
 				//
 			temp->simbolo = node->symbol;
 			temp->frequencia = node->key_value;
@@ -295,28 +300,28 @@ void codify(struct node *node,int* codeaux){
 
 }
 
-void BuildHuffman(char* symbols,float* freq){
+void BuildHuffman(char* symbols,float* freq,struct stack** output){
 /* neste contexto as variaveis globais filho1 = nodo mais pequena, filho2 = segundo nodo mais pequena */
 struct node* aux=0;
 struct node* aux2=0;
 actual = 0;
-int i;
+int i,length;
 char *code;
 code = (char*)malloc(256*sizeof(char));
 
+length = strlen(symbols);
+float matrixaux[length][2];
+//float arrayAux[length];
 
-float matrixaux[strlen(symbols)][2];
-float arrayAux[strlen(symbols)];
-
-for(i=0;i<strlen(symbols);i++){
+for(i=0;i<length;i++){
           matrixaux[i][0] = symbols[i];
           matrixaux[i][1] = freq[i];
           
       }
 
 
- heapsort(matrixaux,10);
- Creategraph(matrixaux,10);
+ heapsort(matrixaux,length);
+ Creategraph(matrixaux,length);
 minimo = root->key_value;
 	while(root->key_value != 1){
 
@@ -399,7 +404,7 @@ minimo = root->key_value;
 	
 	
 		codify(root,codigo);
-		
+		*output=stack;
 		
 	
 
@@ -413,33 +418,62 @@ minimo = root->key_value;
 int main()
 {
 
- int n,i;
- char *Code;
- char  symbols[10]={'a','b','c','d','e','f','g','h','i','j'};
+ int n,i,j;
+ struct stack* codigo;
+ char* symbols;
+ float* freq;
+ //char  symbols[10]={'a','b','c','d','e','f','g','h','i','j'};
  //float freq[6] = {0.25,0.05,0.1,0.15,0.2,0.25};
  //float freq[6] = {0.22,0.03,0.14,0.14,0.41,0.06};
  //float freq[7] = {0.25,0.05,0.05,0.15,0.1,0.3,0.1};
- float freq[10] = {0.01,0.02,0.04,0.04,0.09,0.1,0.1,0.11,0.11,0.38};
- arraysize = 6;
-
-int tamanh = sizeof(freq)/sizeof(float);
+ //float freq[10] = {0.01,0.02,0.04,0.04,0.09,0.1,0.1,0.11,0.11,0.38};
+ 
 //Code = (int*)malloc(tamanh*sizeof(int));
 
-printf("\n antes ");  //Array After Mergesort
-  
-for(i = 0; i < 10; i++)
- {
-  printf("\n%f \n", freq[i]);
- }
+ //Array After Mergesort
 
- BuildHuffman(symbols,freq);
+	char a[256];
+	float b[256];
+	char c[256];
+	FILE* fp;
+	fp = fopen("test.txt","r");
+	i=0;
+	while(fgets(c,50,fp) != NULL){
+		i++;
+	}
 
- printf("\n");
-//Array After Mergesort
- for(i = 0; i < 10; i++)
- {
-  printf("%f \n", freq[i]);
- }
+	fclose(fp);
+	fp = fopen("test.txt","r");
+	symbols = (char*)malloc(i*sizeof(char));
+	freq = (float*)malloc(i*sizeof(float));
+	symbols[i] = '\0';
  
+
+	j=0;
+	while(fgets(c,50,fp) != NULL){
+		sscanf(c,"%c %f",&symbols[j],&freq[j]);
+		printf("\n %c %f",symbols[j],freq[j]);
+		j++;
+	}
+
+
+ BuildHuffman(symbols,freq,&codigo);
+ //struct stack* aux;
+ 
+ while(codigo!=0){
+ 	printf("\n simbolo: %c, frequencia: %f \n codigo:",codigo->simbolo,codigo->frequencia);
+ 	
+ 	for(i=0;i<(codigo->codesize);i++){
+ 			printf("%d",codigo->codificacao[i]);		
+ 	}
+ 	puts("\n");
+ 	codigo = codigo->next;
+ }
+
+
+
+ free(symbols);
+ free(freq);
+ fclose(fp);
  return 0;
 }
